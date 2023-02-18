@@ -16,8 +16,8 @@ single_polls <- single_polls %>%
   mutate(date = as.Date(created_at, format = "%m/%d/%y"))
 
 #obtain current date and properties about that day
-cur.date <- max(biden$date)
-day <- as.numeric(max(biden$date)-min(biden$date))
+cur.date <- as.Date(format(Sys.Date(), "%Y-%m-%d"))
+day <- as.numeric(cur.date-min(biden$date - 3))
 cur.appr <- round(biden$approve_estimate[1], 1)
 cur.disappr <- round(biden$disapprove_estimate[1], 1)
 
@@ -26,20 +26,20 @@ biden_approval <- ggplot(data = biden) +
   geom_hline(aes(yintercept = 50), linewidth = 0.3) +
   geom_segment(aes(x = cur.date, xend = cur.date, y = 20, yend = 80), linetype = "dotted") +
   scale_x_date(date_breaks = "6 weeks" , date_labels = "%b. '%y") +
-  geom_point(data = single_polls, aes(x = single_polls$date, y = yes), color = "#1E8449", alpha = 0.1) +
-  geom_point(data = single_polls, aes(x = single_polls$date, y = no), color = "#E67E22", alpha = 0.1) +
-  geom_line(aes(x = date, y = approve_estimate), color = "#1E8449", linewidth = 1.5) +
-  geom_ribbon(aes(date, ymin = approve_lo, ymax = approve_hi), fill = "#22D16C", alpha = 0.2) +
-  geom_line(aes(x = date, y = disapprove_estimate), color = "#E67E22", linewidth = 1.25) +
-  geom_ribbon(aes(date, ymin = disapprove_lo, ymax = disapprove_hi), fill = "#F68A2B", alpha = 0.2) +
+  geom_point(data = single_polls, aes(x = single_polls$date, y = yes), color = "#009f29", alpha = 0.05) +
+  geom_point(data = single_polls, aes(x = single_polls$date, y = no), color = "#ff7400", alpha = 0.05) +
+  geom_line(aes(x = date, y = approve_estimate), color = "#009f29", linewidth = 1.5) +
+  geom_ribbon(aes(date, ymin = approve_lo, ymax = approve_hi), fill = "#009f29", alpha = 0.15) +
+  geom_line(aes(x = date, y = disapprove_estimate), color = "#ff7400", linewidth = 1.25) +
+  geom_ribbon(aes(date, ymin = disapprove_lo, ymax = disapprove_hi), fill = "#ff7400", alpha = 0.15) +
   annotate("text", x = cur.date, y = 81.25, label = paste("DAY", day), family = "Roboto Condensed", size = 9, color = "#979797") +
-  annotate("text", x = cur.date + 30, y = cur.appr, label = paste(cur.appr, "%", sep = ""), family = "Roboto Condensed", size = 12, fontface = "bold", color = "#1E8449") +
-  annotate("text", x = cur.date + 30, y = cur.disappr, label = paste(cur.disappr, "%", sep = ""), family = "Roboto Condensed", size = 12, fontface = "bold", color = "#E67E22") +
+  annotate("text", x = cur.date + 30, y = cur.appr, label = paste(cur.appr, "%", sep = ""), family = "Roboto Condensed", size = 12, fontface = "bold", color = "#009f29") +
+  annotate("text", x = cur.date + 30, y = cur.disappr, label = paste(cur.disappr, "%", sep = ""), family = "Roboto Condensed", size = 12, fontface = "bold", color = "#ff7400") +
   scale_y_continuous(limits = c(20,81.26), n.breaks = 7, labels = label_number(suffix = "%", scale = 1)) +
   labs(
-    title = "**How <span style = 'color: #1E8449;'>Popular</span>/<span style = 'color: #E67E22;'>Unpopular</span> is Joe Biden?**",
+    title = "**How <span style = 'color: #009f29;'>Popular</span>/<span style = 'color: #ff7400;'>Unpopular</span> is Joe Biden?**",
     subtitle = "An updating calculation of the president's approval rating, accounting for each poll's quality,\n recency, sample size and partisan lean.",
-    x = paste("Date Updated:",format(Sys.Date(), "%B %d %Y")),
+    x = paste("Date Updated:", format(Sys.Date(), "%B %d %Y")),
     y = NULL
   ) +
   theme(
@@ -60,5 +60,5 @@ biden_approval <- ggplot(data = biden) +
 biden_approval
 
 # save the plot
-ggsave(filename = "bidenapproval.png", path = "/Users/mgillis/Desktop/Projects/misc/biden-approval/images/", width = 527.04, height = 296.46, units = "mm")
+ggsave(filename = "bidenapproval.png", path = "/Users/mgillis/Desktop/Projects/misc/biden-approval/final_product/", width = 527.04, height = 296.46, units = "mm")
 
