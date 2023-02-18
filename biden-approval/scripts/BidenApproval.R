@@ -2,23 +2,32 @@ library(tidyverse)
 library(scales)
 library(ggtext)
 
-biden <- read_csv("/Users/mgillis/Desktop/Projects/misc/approval_topline.csv")
+# load in data
+biden <- read.csv("/Users/mgillis/Desktop/Projects/misc/biden-approval/data/approval_topline.csv")
+single_polls <- read.csv("/Users/mgillis/Desktop/Projects/misc/biden-approval/data/president_approval_polls.csv")
 
+# mutate and filter data to obtain accurate dates and filter out unneeded data
 biden <- biden %>% 
   mutate(date = as.Date(modeldate, format = "%m/%d/%Y")) %>% 
   filter(subgroup == "All polls") %>% 
   mutate(range = approve_hi - approve_lo)
 
+single_polls <- single_polls %>% 
+  mutate(date = as.Date(created_at, format = "%m/%d/%y"))
+
+#obtain current date and properties about that day
 cur.date <- max(biden$date)
 day <- as.numeric(max(biden$date)-min(biden$date))
 cur.appr <- round(biden$approve_estimate[1], 1)
 cur.disappr <- round(biden$disapprove_estimate[1], 1)
 
-biden_approval <- biden %>% 
-  ggplot() +
+# create the plot
+biden_approval <- ggplot(data = biden) +
   geom_hline(aes(yintercept = 50), linewidth = 0.3) +
   geom_segment(aes(x = cur.date, xend = cur.date, y = 20, yend = 80), linetype = "dotted") +
   scale_x_date(date_breaks = "6 weeks" , date_labels = "%b. '%y") +
+  geom_point(data = single_polls, aes(x = single_polls$date, y = yes), color = "#1E8449", alpha = 0.1) +
+  geom_point(data = single_polls, aes(x = single_polls$date, y = no), color = "#E67E22", alpha = 0.1) +
   geom_line(aes(x = date, y = approve_estimate), color = "#1E8449", linewidth = 1.5) +
   geom_ribbon(aes(date, ymin = approve_lo, ymax = approve_hi), fill = "#22D16C", alpha = 0.2) +
   geom_line(aes(x = date, y = disapprove_estimate), color = "#E67E22", linewidth = 1.25) +
@@ -47,7 +56,9 @@ biden_approval <- biden %>%
     plot.margin = margin(t = 15, l = 30, b = 15, r = 40, "pt")
   )
 
+# display the plot
 biden_approval
 
-ggsave(filename = "bidenapproval.png", path = "/Users/mgillis/Desktop/Projects/misc/", width = 527.04, height = 296.46, units = "mm")
+# save the plot
+ggsave(filename = "bidenapproval.png", path = "/Users/mgillis/Desktop/Projects/misc/biden-approval/images/", width = 527.04, height = 296.46, units = "mm")
 
