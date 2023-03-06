@@ -10,5 +10,5 @@ https://projects.fivethirtyeight.com/biden-approval-data/approval_topline.csv
 
 ## Packages Used:
 * tidyverse: https://www.tidyverse.org/
-* scaeles: https://scales.r-lib.org/
+* scales: https://scales.r-lib.org/
 * ggtext: https://cran.r-project.org/web/packages/ggtext/index.html
