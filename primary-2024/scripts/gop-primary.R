@@ -2,12 +2,15 @@ library(tidyverse)
 library(usmap)
 library(ggtext)
 
+# import data
 gop_polls <- read.csv("primary-2024/data/gop-polls.csv")
 
+# clean data
 gop_polls <- gop_polls %>% 
   select(State, Margin) %>% 
   rename(state = State)
 
+# make plot
 plot_usmap(data = gop_polls, values = "Margin", regions = "states", color = "black") +
   scale_fill_gradient2(
     name = "Margin of\nTrump Lead",
@@ -36,5 +39,6 @@ plot_usmap(data = gop_polls, values = "Margin", regions = "states", color = "bla
     legend.background = element_blank()
     )
 
+# export plot
 ggsave(filename = "gop-primary.png", path = "/Users/mgillis/Desktop/Projects/misc/primary-2024/final_product/", width = 200, height = 200, units = "mm")
 
